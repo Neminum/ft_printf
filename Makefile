@@ -12,21 +12,22 @@
 
 CC = cc
 CFLAGS = -Wall -Werror -Wextra
+MAKEFLAGS = --no-print-directory
+SRC = ft_printf.c
 NAME = libftprintf.a
-
-SRC = ft_printf.c\
-	ft_printf_h.c
-
 OBJ = $(SRC:.c=.o)
 
-$(NAME) : $(OBJ)
-	ar -cvq $(NAME) $^
+all : $(NAME)
 
-fclean :
-	-rm $(OBJ) $(NAME)
+$(NAME) : $(OBJ)
+	make -C libft
+	ar -cvq $(NAME) $(OBJ) libft/*.o
 
 clean :
 	-rm $(OBJ)
+
+fclean :
+	-rm $(OBJ) $(NAME)
 
 re : fclean all
 

@@ -6,11 +6,16 @@
 /*   By: tsurma <tsurma@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:34:38 by tsurma            #+#    #+#             */
-/*   Updated: 2023/11/27 17:44:35 by tsurma           ###   ########.fr       */
+/*   Updated: 2023/11/27 19:34:58 by tsurma           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+static int	ft_crossroads(va_list args, char d, int output);
+static int	ft_putstr_fd_p(char *s);
+static int	ft_putchar_fd_p(char s);
+static int	ft_putnbr_base(int nbr, char d);
 
 int	ft_printf(const char *input, ...)
 {
@@ -30,21 +35,34 @@ int	ft_printf(const char *input, ...)
 			output = ft_crossroads(args, input[++i], output);
 			++i;
 		}
+		else
+			++i;
 	}
-	return (0);
+	return (output);
 }
 
-int	ft_crossroads(va_list args, char d, int output)
+static int	ft_crossroads(va_list args, char d, int output)
 {
+	if (d == 'c')
+		output = output + ft_putchar_fd_p(va_arg(args, int));
+	if (d == 's')
+		output = output + ft_putstr_fd_p(va_arg(args, char *));
 	if (d == 'i' || d == 'd')
-		output = output + ft_putnbr_fd_p(va_arg(args, int), 1);
-	if (d == 'c' || d == 's')
-		output = output + ft_putstr_fd_p(va_arg(args, char *), 1);
+		output = output + ft_putstr_fd_p(ft_itoa(va_arg(args, int)));
+	if (d == 'x' || d == 'X')
+		output = output + ft_putnbr_base(va_arg(args, int), d);
 	if (d == '%')
 	{
-		write(1, '%', 1);
+		write(1, "%", 1);
 		++output;
 	}
+	return (output);
+}
+
+static int	ft_putchar_fd_p(char s)
+{
+	write(1, &s, 1);
+	return (1);
 }
 
 static int	ft_putstr_fd_p(char *s)
@@ -57,18 +75,40 @@ static int	ft_putstr_fd_p(char *s)
 	return (l);
 }
 
-static int	ft_putnbr_fd_p(int n)
+static int	ft_putnbr_base(int nbr, char d)
 {
-	return (ft_putstr_fd_p(ft_itoa(n)));
+	int		l;
+	int		t;
+	char	*base;
+
+	if (d == 'x')
+		base = "0123456789abcdef";
+	else
+		base = "0123456789ABCDEF";
+	l = 0;
+	if (nbr < 0)
+	{
+		nbr = -nbr;
+		ft_putchar_fd_p('-');
+		++l;
+	}
+	t = nbr / 16;
+	if (t >= 16)
+		ft_putnbr_base(t, d);
+	else
+	{
+		ft_putchar_fd_p(base[t]);
+		++l;
+	}
+	ft_putchar_fd_p(base[nbr % 16]);
+	++l;
+	return (l);
 }
 
-// static	int ft_ptohex(void *ptr)
-// {
-
-// }
-
-// int main(void)
-// {
-// 	ft_printf("%d", 100);
-// 	return (0);
-// }
+int main(void)
+{
+	// ft_printf("%c%c%s%c%d%c%x%c%X%c", 'A', '\n', "This is a Test", '\n',
+	// 	10451, '\n', 15, '\n', 15, '\n');
+	ft_printf("%d", ft_printf("%s", "This should be 17"));
+	return (0);
+}
