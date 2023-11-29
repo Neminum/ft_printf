@@ -6,82 +6,103 @@
 /*   By: tsurma <tsurma@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:04:04 by tsurma            #+#    #+#             */
-/*   Updated: 2023/11/27 19:00:21 by tsurma           ###   ########.fr       */
+/*   Updated: 2023/11/29 17:28:50 by tsurma           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_putnbr_base(int nbr, char *base)
+static int	ft_putchar_p(char s);
+static int	ft_putstr_p(char *s);
+static int	ft_puthex(unsigned long int nbr, char d, int b);
+static int	ft_putnbr_u(long long int n);
+
+
+int	ft_crossroads(va_list args, char d, int output)
+{
+
+	if (d == 'c')
+		output = output + ft_putchar_p(va_arg(args, int));
+	else if (d == 's')
+		output = output + ft_putstr_p(va_arg(args, char *));
+	else if (d == 'i' || d == 'd')
+		output = output + ft_putnbr_u(va_arg(args, int));
+	else if (d == 'u')
+		output = output + ft_putnbr_u(va_arg(args, unsigned int));
+	else if (d == 'x' || d == 'X')
+		output = output + ft_puthex(va_arg(args, unsigned int), d, 0);
+	else if (d == 'p')
+		output = output + ft_puthex(va_arg(args, unsigned long int), d, 0);
+	else if (d == '%')
+		output = output + ft_putchar_p('%');
+	return (output);
+}
+
+static int	ft_putchar_p(char s)
+{
+	write(1, &s, 1);
+	return (1);
+}
+
+static int	ft_putstr_p(char *s)
 {
 	int	l;
-	int	t;
 
 	l = 0;
-	if (nbr < 0)
+	if (!s)
 	{
-		nbr = -nbr;
-		ft_putchar_fd_p('-');
-		++l;
+		write(1, "(null)", 6);
+		return (6);
 	}
-	t = nbr / 16;
-	if (t >= 16)
-	{
-		ft_putnbr_base(t, base);
-		++l;
-	}
-	else
-	{
-		ft_putchar_fd_p(base[t]);
-		++l;
-	}
-	ft_putchar_fd_p(base[nbr % 16]);
-	++l;
+	l = ft_strlen(s);
+	write(1, s, l);
 	return (l);
 }
 
-int	put_hex_upper(int nbr)
+static int	ft_puthex(unsigned long int nbr, char d, int b)
 {
-	char	b[16];
+	int					l;
+	unsigned long int	t;
+	char				*base;
 
-	b[0] = '0';
-	b[1] = '1';
-	b[2] = '2';
-	b[3] = '3';
-	b[4] = '4';
-	b[5] = '5';
-	b[6] = '6';
-	b[7] = '7';
-	b[8] = '8';
-	b[9] = '9';
-	b[10] = 'A';
-	b[11] = 'B';
-	b[12] = 'C';
-	b[13] = 'D';
-	b[14] = 'E';
-	b[15] = 'F';
-	return (ft_putnbr_base(nbr, b));
+	l = 0;
+	if (d == 'X')
+		base = "0123456789ABCDEF";
+	else
+		base = "0123456789abcdef";
+	if (d == 'p' && b == 0)
+	{
+		if (nbr == 0)
+			return (ft_putstr_p("(nil)"));
+		else
+			l += ft_putstr_p("0x");
+	}
+	t = nbr / 16;
+	if (t >= 16)
+		l += ft_puthex(t, d, 1);
+	else if (t != 0)
+		l += ft_putchar_p(base[t]);
+
+	l += ft_putchar_p(base[nbr % 16]);
+	return (l);
 }
 
-int	put_hex_lower(int nbr)
+static int	ft_putnbr_u(long long int n)
 {
-	char	b[16];
+	int	l;
 
-	b[0] = '0';
-	b[1] = '1';
-	b[2] = '2';
-	b[3] = '3';
-	b[4] = '4';
-	b[5] = '5';
-	b[6] = '6';
-	b[7] = '7';
-	b[8] = '8';
-	b[9] = '9';
-	b[10] = 'a';
-	b[11] = 'b';
-	b[12] = 'c';
-	b[13] = 'd';
-	b[14] = 'e';
-	b[15] = 'f';
-	return (ft_putnbr_base(nbr, b));
+	l = 0;
+	if (n < 0)
+	{
+		l += ft_putchar_p('-');
+		n = -n;
+	}
+	if (n > 9)
+	{
+		l += ft_putnbr_u(n / 10);
+		l += ft_putnbr_u(n % 10);
+	}
+	else
+		l += ft_putchar_p(n + '0');
+	return (l);
 }

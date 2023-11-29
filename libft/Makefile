@@ -6,7 +6,7 @@
 #    By: tsurma <tsurma@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/15 11:46:44 by tsurma            #+#    #+#              #
-#    Updated: 2023/11/22 13:30:47 by tsurma           ###   ########.fr        #
+#    Updated: 2023/11/29 17:39:36 by tsurma           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,11 +56,11 @@ all: $(NAME)
 $(NAME) : $(OBJ)
 	ar -cvq $(NAME) $^
 
-fclean :
-	-rm $(OBJ) $(NAME)
-
 clean :
-	-rm $(OBJ)
+	-rm -f $(OBJ)
+
+fclean : clean
+	-rm -f $(NAME)
 
 re : fclean all
 

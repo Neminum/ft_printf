@@ -6,7 +6,7 @@
 /*   By: tsurma <tsurma@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 15:36:17 by tsurma            #+#    #+#             */
-/*   Updated: 2023/11/27 19:24:19 by tsurma           ###   ########.fr       */
+/*   Updated: 2023/11/29 14:27:02 by tsurma           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,6 @@
 # include "libft/libft.h"
 
 int	ft_printf(const char *input, ...);
-static int	ft_crossroads(va_list args, char d, int output);
+int	ft_crossroads(va_list args, char d, int output);
 
 #endif

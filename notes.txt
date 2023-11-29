@@ -1,1 +1,0 @@
-cc -Wall -Werror -Wextra ft_printf.c libft/ft_itoa.c libft/ft_strlen.c libft/ft_calloc.c libft/ft_bzero.c
