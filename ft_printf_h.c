@@ -6,7 +6,7 @@
 /*   By: tsurma <tsurma@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:04:04 by tsurma            #+#    #+#             */
-/*   Updated: 2023/11/29 17:28:50 by tsurma           ###   ########.fr       */
+/*   Updated: 2023/12/06 16:31:53 by tsurma           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,8 @@ static int	ft_putstr_p(char *s);
 static int	ft_puthex(unsigned long int nbr, char d, int b);
 static int	ft_putnbr_u(long long int n);
 
-
 int	ft_crossroads(va_list args, char d, int output)
 {
-
 	if (d == 'c')
 		output = output + ft_putchar_p(va_arg(args, int));
 	else if (d == 's')
@@ -82,7 +80,6 @@ static int	ft_puthex(unsigned long int nbr, char d, int b)
 		l += ft_puthex(t, d, 1);
 	else if (t != 0)
 		l += ft_putchar_p(base[t]);
-
 	l += ft_putchar_p(base[nbr % 16]);
 	return (l);
 }
